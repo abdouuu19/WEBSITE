@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Grade Calculator</title>
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2196F3">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app--status-bar-style" content="black">
+    <meta name="mobile-web-app-title" content="Grade Calc">
+    <link rel="touch-icon" href="/icons/icon-152x152.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="themeToggle" class="btn-floating waves-effect waves-light">
+            <i class="material-icons">brightness_4</i>
+        </button>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header center-align">
+            <h3 class="gradient-text">University Grade Calculator</h3>
+            <p class="header-subtitle">Calculate your semester grades with ease</p>
+        </header>
+
+        <!-- Install PWA Prompt -->
+        <div id="installPrompt" class="install-prompt hidden">
+            <div class="install-content">
+                <i class="material-icons">add_to_home_screen</i>
+                <span>Install app for offline use!</span>
+                <button id="installButton" class="btn waves-effect waves-light">Install</button>
+                <button id="closePrompt" class="btn-flat waves-effect">Later</button>
+            </div>
+        </div>
+
+        <!-- Notification Pop-Up -->
+        <div id="notification" class="notification hidden">
+            <i class="material-icons">info</i>
+            <span id="notification-text"></span>
+        </div>
+
+        <!-- Calculator Section -->
+        <main id="calculator" class="container">
+            <div class="card calculator-card">
+                <!-- Grading System -->
+                <div class="grading-system center-align section">
+                    <h5><i class="material-icons">settings</i> Select Grading System</h5>
+                    <div class="grading-buttons">
+                        <button class="btn waves-effect waves-light" onclick="setGradingSystem(40, 60)">
+                            <i class="material-icons left">timeline</i>40%-60%
+                        </button>
+                        <button class="btn waves-effect waves-light" onclick="setGradingSystem(50, 50)">
+                            <i class="material-icons left">timeline</i>50%-50%
+                        </button>
+                        <button class="btn waves-effect waves-light" onclick="setGradingSystem(67, 33)">
+                            <i class="material-icons left">timeline</i>67%-33%
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modules Section -->
+                <div class="section">
+                    <h5><i class="material-icons">library_books</i> Modules</h5>
+                    <div id="modules" class="modules-container"></div>
+                    <button class="btn waves-effect waves-light add-module-btn" onclick="addModule()">
+                        <i class="material-icons left">add</i>Add Module
+                    </button>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section section center-align">
+                    <h4 id="final-result" class="final-grade"></h4>
+                    <p id="final-quote" class="quote"></p>
+                    <div class="progress-container">
+                        <div class="progress">
+                            <div id="progress-bar" class="determinate" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn waves-effect waves-light calculate-btn" onclick="calculateFinalGrade()">
+                            <i class="material-icons left">calculate</i>Calculate
+                        </button>
+                        <button class="btn waves-effect waves-light" onclick="generatePDF()">
+                            <i class="material-icons left">download</i>Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="page-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col l6 s12">
+                        <h5>About the Developer</h5>
+                        <p>Hi! I'm Abdou, a passionate developer focused on creating useful tools for students. Feel free to connect with me!</p>
+                    </div>
+                    <div class="col l4 offset-l2 s12">
+                        <h5>Connect with Me</h5>
+                        <ul class="social-links">
+                            <li>
+                                <a href="https://www.facebook.com/profile.php?id=100074209436216" target="_blank" class="white-text">
+                                    <i class="material-icons left">facebook</i>Follow on Facebook
+                                </a>
+                            </li>
+                            <li>
+                                <a href="mailto:contact@abdou.dev" class="white-text">
+                                    <i class="material-icons left">email</i>Contact Me
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <div class="container center-align">
+                    © 2025 Developed with <i class="material-icons tiny">favorite</i> by Abdou
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+
+    <!-- PWA Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered successfully');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
