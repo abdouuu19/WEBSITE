@@ -1,6 +1,22 @@
 let modules = [];
 let gradingSystem = { tdWeight: 40, examWeight: 60 };
 
+// Theme toggle functionality
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
+// Initialize theme
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+}
+
 // Show notification
 function showNotification(message) {
     const notification = document.getElementById('notification');
@@ -38,6 +54,8 @@ function addModule() {
     document.getElementById('modules').appendChild(moduleDiv);
     modules.push(moduleId);
 }
+
+
 
 // Toggle TD Only mode
 function toggleTDOnly(moduleId) {
@@ -77,7 +95,7 @@ function calculateFinalGrade() {
 
         const resultElement = document.getElementById(`result${moduleId}`);
         resultElement.textContent = `${grade.toFixed(2)}/20`;
-        resultElement.className = `result-display ${grade >= 10 ? 'green-text' : 'red-text'}`;
+        resultElement.className = `result-display ${grade >= 10 ? 'green-text' : 'red-text'} text-darken-2`; // Added text-darken-2 for better visibility
 
         totalWeighted += grade * coef;
         totalCoefficient += coef;
@@ -96,6 +114,7 @@ function updateResults(finalGrade) {
     const progressBar = document.getElementById('progress-bar');
 
     finalResult.textContent = `Final Grade: ${finalGrade.toFixed(2)}/20`;
+    finalResult.className = `final-grade ${finalGrade >= 10 ? 'green-text' : 'red-text'} text-darken-2`; // Added text-darken-2
     progressBar.style.width = `${Math.min(finalGrade * 5, 100)}%`;
 
     // Set quote based on grade
@@ -122,20 +141,22 @@ function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Set up document
-    doc.setFontSize(20);
-    doc.setTextColor(33, 150, 243); // Blue header
+    // Set up document with custom styling
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(33, 150, 243);
     doc.text('Grade Calculator Results', 105, 20, { align: 'center' });
     
     // Add current date
-    doc.setFontSize(10);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
     doc.setTextColor(100);
     const date = new Date().toLocaleDateString();
     doc.text(`Generated on: ${date}`, 105, 30, { align: 'center' });
 
-    // Table header
-    doc.setFontSize(12);
-    doc.setTextColor(0);
+    // Table header with improved styling
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
     const headers = ['Module Name', 'TD', 'Exam', 'Coefficient', 'Final Grade'];
     let startY = 45;
     const cellWidth = 38;
@@ -150,7 +171,9 @@ function generatePDF() {
         doc.text(header, 15 + (i * cellWidth), startY);
     });
 
-    // Table content
+    // Table content with improved styling
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
     doc.setTextColor(0);
     startY += 10;
     
@@ -177,7 +200,7 @@ function generatePDF() {
         startY += 10;
     });
 
-    // Final grade
+    // Final grade with improved styling
     const finalGrade = document.getElementById('final-result').textContent;
     const finalQuote = document.getElementById('final-quote').textContent;
     
@@ -185,11 +208,13 @@ function generatePDF() {
     doc.setFillColor(33, 150, 243, 0.1);
     doc.rect(10, startY - 5, 190, 20, 'F');
     
-    doc.setFontSize(14);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
     doc.setTextColor(33, 150, 243);
     doc.text(finalGrade, 105, startY + 5, { align: 'center' });
     
     doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
     doc.setTextColor(100);
     doc.text(finalQuote, 105, startY + 15, { align: 'center' });
 
@@ -198,7 +223,8 @@ function generatePDF() {
     showNotification('PDF generated successfully!');
 }
 
-// Initialize first module on page load
+// Initialize page
 document.addEventListener('DOMContentLoaded', () => {
+    initializeTheme();
     addModule();
 });
